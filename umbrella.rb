@@ -30,3 +30,15 @@ pp "Your location is lat: #{latitude}, lon: #{longitude}"
 pirate_weather_key= ENV.fetch("PIRATE_WEATHER_KEY")
 
 pirate_weather_url= "https://api.pirateweather.net/forecast/#{pirate_weather_key}/#{latitude},#{longitude}"
+
+raw_weather_data=HTTP.get(pirate_weather_url)
+
+parsed_weather_data=JSON.parse(raw_weather_data)
+
+currently_hash=parsed_weather_data.fetch("currently")
+
+current_temp=currently_hash.fetch("temperature")
+
+current_summary=currently_hash.fetch("summary")
+
+pp "Today #{current_location} is #{current_summary} with a temperature of #{current_temp}F"
