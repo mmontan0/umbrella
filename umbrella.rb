@@ -42,3 +42,38 @@ current_temp=currently_hash.fetch("temperature")
 current_summary=currently_hash.fetch("summary")
 
 pp "Today #{current_location} is #{current_summary} with a temperature of #{current_temp}F"
+
+minutely_hash=parsed_weather_data.fetch("minutely")
+
+if minutely_hash
+  next_hour_summary=minutely_hash.fetch("summary")
+  puts "Next hour will be: #{next_hour_summary}"
+end
+
+hourly_hash=parsed_weather_data.fetch("hourly")
+
+hourly_data_array=hourly_hash.fetch("data")
+
+next_twelve_hours=hourly_data_array[1 ..12]
+
+precip_threshold=0.10
+
+any_precipitation= false
+
+next_twelve_hours.each do |hour_hash|
+  prec_probability=hour_hash.fetch("precipProbability")
+  if prec_probability>precip_threshold
+    any_precipitation=true
+    precip_time=Time.at(hour_hash.fetch("time"))
+    sec_next_rain=precip_time-Time.now
+    hours_from_now=sec_next_rain/60/60
+
+    puts "In #{hours_from_now.round} there is a #{prec_probability*100}% of precipitation"
+  end
+end
+
+if any_precipitation=true
+  pp "You might want to take an umbrella"
+else
+  pp "You don't need an Umbrella, enjoy the weather!"
+end
